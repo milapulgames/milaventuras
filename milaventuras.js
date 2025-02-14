@@ -1,13 +1,31 @@
-Mila.RegistrarModulo("Milaventuras");
+Mila.Modulo({
+  define:"Milaventuras",
+  usa:["interprete","juego","milascript/pantalla","milascript/lienzo","milascript/tiempo","milascript/archivo","milascript/base"],
+  necesita:["milabloques/milabloques"]
+});
 
 Mila.alIniciar(function() {
+ 
+
+  let dataJuego;
+  Mila.Archivo.AbrirArchivo_YLuego_(
+        './juegos/pong.js', 
+        function(contenido){
+          eval(`dataJuego = ${contenido}`); 
+          Milaventuras.Inicializar(dataJuego);
+        });
+});
+
+Milaventuras.Inicializar = function(dataJuego) {
   Mila.Contrato({
     Proposito:"Inicializar el módulo principal de Milaventuras, creando la panalla principal y los submódulos",
     Precondiciones: "-"
   });
+  Milaventuras.juegoActual = Milaventuras.Juego.nuevo(dataJuego);
+
   Milaventuras.lienzo = Mila.Lienzo.nuevo();
-  Milaventuras.escritorio = Mila.Bloques.nuevoEscritorio();
-  Milaventuras.temporizador = Mila.Temporizador.nuevo(10, Milaventuras.Pulso);
+  Milaventuras.escritorio = Mila.Bloques.nuevoEscritorio({paleta:Milaventuras.juegoActual.paleta});
+  Milaventuras.temporizador = Mila.Tiempo.nuevoMetronomo(10, Milaventuras.Pulso);
   let botonEjecutar = Mila.Pantalla.nuevoBoton({
     texto: "Ejecutar",
     funcion: Milaventuras.botonEjecutarPresionado
@@ -21,10 +39,10 @@ Mila.alIniciar(function() {
     funcion: Milaventuras.Pulso
   });
   let menuSuperior = Mila.Pantalla.nuevoDisposicionHorizontal({
-    elementos:[botonEjecutar,botonDetener,botonReiniciar,botonPulso]
+    elementos:[botonEjecutar,botonReiniciar,botonPulso]
   });
   let areaDeTrabajo = Mila.Pantalla.nuevoDisposicionHorizontal({
-    elementos:[lienzo,escritorio]
+    elementos:[Milaventuras.lienzo,Milaventuras.escritorio]
   });
   Milaventuras.pantallaPrincipal = Mila.Pantalla.nueva({
     disposicion: 'vertical',
@@ -33,10 +51,7 @@ Mila.alIniciar(function() {
       areaDeTrabajo
     ]
   });
-
-  let dataJuego = Mila.Archivo.contenidoDe_('juegos/pong');
-  Milaventuras.juegoActual = Milaventuras.Juego.nuevo(dataJuego);
-});
+};
 
 Milaventuras.botonEjecutarPresionado = function() {
   if (Milaventuras.temporizador.estaEnEjecucion()) {

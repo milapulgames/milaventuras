@@ -1,6 +1,8 @@
-Mila.UsaModulo("Milaventuras");
-
-Mila.RegistrarModulo("Milaventuras.Interprete");
+Mila.Modulo({
+  define:"Milaventuras.Interprete",
+  usa:["milaventuras"],
+  necesita:["/milascript/tipo"]
+});
 
 Mila.RegistrarTipo('Interprete',{
 });
