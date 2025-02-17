@@ -34,6 +34,18 @@ Milaventuras.Juego.nuevo = function(dataJuego) {
   const bloquesDeComandos = Object.keys(dataJuego.bloques.comandos);
   const bloquesDeExpresiones = Object.keys(dataJuego.bloques.expresiones);
   const roles = dataJuego.roles.map(x => x.id);
+  //¿Como separamos los mapas dentro del juego?
+  juego.roles = dataJuego.roles;
+  juego.objetos = dataJuego.objetos;
+  juego.elementos = dataJuego.mapas[0].elementos; // carga de elementos para el mapa
+  juego.automatas = [];
+  for (let elemento of juego.elementos) {
+    let claseElemento = Milaventuras.Juego.clase_De_(elemento.clase, juego);
+    elemento.imagen = claseElemento.imagen;
+    if (Milaventuras.Juego.es_UnAutomataDe_(claseElemento, juego)) {
+      juego.automatas.push(elemento);
+    }
+  }
   Mila.Bloques.DefinirBloque_({
     id:"Comando",
     estilo:"math_blocks",
@@ -68,7 +80,7 @@ Milaventuras.Juego.nuevo = function(dataJuego) {
     }),
     variantes: bloquesDeExpresiones.map(x => { return {expresion:x}; })
   });
-    Mila.Bloques.DefinirBloque_({
+  Mila.Bloques.DefinirBloque_({
     id:"Definicion",
     estilo:"procedure_blocks",
     texto:"%{Rol}\n%{Cuerpo}",
@@ -76,7 +88,7 @@ Milaventuras.Juego.nuevo = function(dataJuego) {
       Rol: Mila.Bloques.definicionDesplegable(roles),
       Cuerpo: Mila.Bloques.definicionCuerpo()
     }
-  })
+  });
    
   juego.paleta = {
     kind: "categoryToolbox",
@@ -103,14 +115,19 @@ Milaventuras.Juego.nuevo = function(dataJuego) {
   return juego;
 };
 
-Milaventuras.Juego.CargarCodigo = function(dataCodigo) {
+Milaventuras.Juego._Juego.prototype.CargarCodigo = function(dataCodigo) {
   Mila.Contrato({
     Proposito:"Carga los códigos de {dataCodigo} en los autómatas del juego, según su rol",
     Precondiciones: "-",
     // Parametros:[dataCodigo,DataCodigo]
   });
-  for (let automata of Milaventuras.Juego.automatas) {
-    automata.interprete = Milaventuras.Interprete.nuevo(dataCodigo[automata.rol]);
+  for (let rol of this.roles) {
+    if (!(rol.id in dataCodigo)) {
+      dataCodigo[rol] = "";
+    }
+  }
+  for (let automata of this.automatas) {
+    automata.interprete = Milaventuras.Interprete.nuevo(dataCodigo[automata.clase]);
   }
 };
 
@@ -122,4 +139,24 @@ Milaventuras.Juego.pulso = function() {
   for (let automata of Milaventuras.Juego.automatas) {
     automata.interprete.Pulso();
   }
+};
+Milaventuras.Juego.mapas = function(dataJuego) {
+  return dataJuego.mapas;
+};
+
+Milaventuras.Juego.clase_De_ = function(idDeClase, juego) {
+  for (let clase of juego.roles.concat(juego.objetos)) {
+    if (clase.id == idDeClase) {
+      return clase;
+    }
+  }
+};
+
+Milaventuras.Juego.es_UnAutomataDe_ = function(claseElemento, juego) {
+  for (let clase of juego.roles) {
+    if (clase.id == claseElemento.id) {
+      return true;
+    }
+  }
+  return false;
 };
