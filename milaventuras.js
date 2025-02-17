@@ -1,12 +1,10 @@
 Mila.Modulo({
   define:"Milaventuras",
-  usa:["interprete","juego","milascript/pantalla","milascript/lienzo","milascript/tiempo","milascript/archivo","milascript/base"],
+  usa:["interprete","juego","generador","milascript/pantalla","milascript/lienzo","milascript/tiempo","milascript/archivo","milascript/base"],
   necesita:["milabloques/milabloques"]
 });
 
 Mila.alIniciar(function() {
- 
-
   let dataJuego;
   Mila.Archivo.AbrirArchivo_YLuego_(
         './juegos/pong.js', 
@@ -23,7 +21,7 @@ Milaventuras.Inicializar = function(dataJuego) {
   });
   Milaventuras.juegoActual = Milaventuras.Juego.nuevo(dataJuego);
 
-  Milaventuras.lienzo = Mila.Lienzo.nuevo();
+  Milaventuras.lienzo = Mila.Lienzo.nuevo(Milaventuras.juegoActual.elementos);
   Milaventuras.escritorio = Mila.Bloques.nuevoEscritorio({paleta:Milaventuras.juegoActual.paleta});
   Milaventuras.temporizador = Mila.Tiempo.nuevoMetronomo(10, Milaventuras.Pulso);
   let botonEjecutar = Mila.Pantalla.nuevoBoton({
@@ -51,6 +49,15 @@ Milaventuras.Inicializar = function(dataJuego) {
       areaDeTrabajo
     ]
   });
+  Blockly.JavaScript.forBlock.Definicion = function(bloque) {
+    return `console.log('${bloque.getFieldValue("Rol")}')` + Blockly.JavaScript.statementToCode(bloque, "Cuerpo");
+  };
+  Blockly.JavaScript.forBlock.Comando = function(bloque) {
+    return `console.log('Hacer ${bloque.ajustes.comando()}')`;
+  };
+  Blockly.JavaScript.forBlock.Expresion = function(bloque) {
+    return [`console.log('${bloque.ajustes.expresion()}')||0`,0];
+  };
 };
 
 Milaventuras.botonEjecutarPresionado = function() {

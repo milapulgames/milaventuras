@@ -7,12 +7,13 @@ Mila.Modulo({
 Mila.RegistrarTipo('Interprete',{
 });
 
-Milaventuras.Interprete.nuevo = function() {
+Milaventuras.Interprete.nuevo = function(codigo) {
   Mila.Contrato({
     Proposito:"Describir un nuevo intérprete de Milaventuras",
     Precondiciones: "-"
   });
   return {
+    _codigo: codigo,
     Ejecutar: function() { Milaventuras.Interprete.Ejecutar(this); },
     Detener: function() { Milaventuras.Interprete.Detener(this); },
     Reiniciar: function() { Milaventuras.Interprete.Reiniciar(this); },
