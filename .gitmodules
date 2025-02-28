@@ -1,0 +1,6 @@
+[submodule "milascript"]
+	path = milascript
+	url = git@github.com:milapulgames/milascript.git
+[submodule "milabloques"]
+	path = milabloques
+	url = git@github.com:milapulgames/milabloques.git
