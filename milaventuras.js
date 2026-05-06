@@ -1,7 +1,7 @@
-Mila.Modulo({
+Mila.Módulo({
   define:"Milaventuras",
-  usa:["interprete","juego","generador","milascript/pantalla","milascript/lienzo","milascript/tiempo","milascript/archivo","milascript/base"],
-  necesita:["milabloques/milabloques"]
+  usa:["interprete","juego","generador","$milascript/pantalla","$milascript/lienzo","$milascript/tiempo","$milascript/archivo","$milascript/base"],
+  necesita:["$milabloques/milabloques"]
 });
 
 Mila.alIniciar(function() {

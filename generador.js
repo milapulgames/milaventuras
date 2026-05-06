@@ -1,6 +1,5 @@
-Mila.Modulo({
-  define:"Milaventuras.Generador",
-  usa:["milaventuras"]
+Mila.Módulo({
+  define:"Milaventuras.Generador"
 });
 
 Milaventuras.Generador.codigosGenerados = function(escritorio) {

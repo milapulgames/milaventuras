@@ -1,7 +1,6 @@
-Mila.Modulo({
+Mila.Módulo({
   define:"Milaventuras.Juego",
-  usa:["milaventuras"],
-  necesita:["/milascript/tipo"]
+  necesita:["$/milascript/tipo"]
 });
 
 Mila.RegistrarTipo('DataJuego',{
